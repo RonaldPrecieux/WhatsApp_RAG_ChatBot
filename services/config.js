@@ -27,8 +27,10 @@ module.exports = Object.freeze({
 
   // Server configuration
   port: process.env.PORT || 8080,
-  redisHost: process.env.REDIS_HOST || "localhost",
-  redisPort: process.env.REDIS_PORT || 6379,
+
+
+  // redisHost: process.env.REDIS_HOST || "redis://localhost",
+  // redisPort: process.env.REDIS_PORT || 6379,
 
   checkEnvVariables: function () {
     ENV_VARS.forEach(function (key) {

@@ -5,23 +5,42 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// "use strict";
+
+// const redis = require('redis');
+// const config = require('./config');
+
+// const client = redis.createClient({
+//   socket: {
+//     host: config.redisHost,
+//     port: config.redisPort
+//   }
+// });
+
+// client.on('error', (err) => {
+//   console.error('Redis Client Error', err);
+// });
+
+// client.connect();
 "use strict";
 
 const redis = require('redis');
 const config = require('./config');
 
+// On vérifie d'abord si une URL complète existe, sinon on utilise host/port
 const client = redis.createClient({
-  socket: {
-    host: config.redisHost,
-    port: config.redisPort
-  }
+    url: process.env.REDIS_URL
 });
 
 client.on('error', (err) => {
-  console.error('Redis Client Error', err);
+    console.error('Redis Client Error', err);
 });
 
-client.connect();
+client.connect().then(() => {
+    console.log("Connecté à Redis avec succès !");
+});
+
+module.exports = client;
 
 module.exports = class Cache {
     static async insert(key) {
