@@ -15,8 +15,8 @@ const ENV_VARS = [
   "ACCESS_TOKEN",
   "APP_SECRET",
   "VERIFY_TOKEN",
-  "REDIS_HOST",
-  "REDIS_PORT"
+  // "REDIS_HOST",
+  // "REDIS_PORT"
 ];
 
 module.exports = Object.freeze({
