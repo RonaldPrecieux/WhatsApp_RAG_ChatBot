@@ -19,6 +19,8 @@ const ENV_VARS = [
   // "REDIS_PORT"
 ];
 
+
+
 module.exports = Object.freeze({
   // Application information
   appSecret: process.env.APP_SECRET,

@@ -16,7 +16,7 @@ fi
 APPTOKEN="${APP_TOKEN}"
 APPID="${APP_ID}"
 WABAID="${WABA_ID}"
-APIVERSION="${CLOUD_API_VERSION}"
+APIVERSION="${APIVERSION}"
 
 # 3. Vérification de sécurité
 if [ -z "$APPTOKEN" ]; then

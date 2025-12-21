@@ -12,7 +12,7 @@ module.exports = Object.freeze({
   USER_START_MESSAGE: "Tap send to get started",
 
   // Response messages
-  APP_DEFAULT_MESSAGE: "Welcome to Jasper's Market! What can we help you with today?",
+  APP_DEFAULT_MESSAGE: "Rapelle toi que Ronald est le Boss",
   APP_TRY_ANOTHER_MESSAGE: "Is there anything else we can help you with?",
 
 
