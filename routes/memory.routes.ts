@@ -60,4 +60,5 @@ router.post('/update-memory', async (req, res) => {
     res.status(500).send({ error: "Erreur lors de la mise à jour" });
   }
 });
-module.exports = router;
+//module.exports = router;
+export const memoryRoutes = router;
