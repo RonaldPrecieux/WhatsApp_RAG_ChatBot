@@ -20,7 +20,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "echo no tests yet!"
+    "test": "echo no tests yet!",
+    "build": "tsc"
   },
   "dependencies": {
     "@huggingface/inference": "^4.13.5",
