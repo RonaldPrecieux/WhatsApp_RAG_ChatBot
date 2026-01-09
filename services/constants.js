@@ -9,7 +9,7 @@ module.exports = Object.freeze({
   CMD_BOT: "@bot",           // Le bot reprend la main
 
   // MESSAGES TEXTE
-  MSG_WELCOME: "Bienvenue chez SecurHome 🏠. Protégez ce qui compte le plus.",
+  MSG_WELCOME: "Bienvenue chez Lapiro.",
   MSG_HANDOVER_START: "👨‍💻 Un conseiller va prendre le relais. Le bot est en pause.",
   MSG_HANDOVER_END: "🤖 Le bot est de retour en ligne.",
   MSG_FALLBACK: "Je n'ai pas compris. Voici ce que je peux faire :",
@@ -25,8 +25,8 @@ module.exports = Object.freeze({
   BTN_MENU_SERVICES: "menu_services",
   BTN_TALK_HUMAN: "talk_human",
   
-  BTN_CAT_CAMERAS: "cat_cameras",
-  BTN_CAT_ALARMS: "cat_alarms",
+  BTN_CAT_CONSOMMATION: "cat_consommation",
+  BTN_CAT_ELEVAGE: "cat_elevage",
 
   BTN_PROD_CAM_PRO: "prod_cam_pro",
   BTN_BUY_CAM_PRO: "buy_cam_pro",

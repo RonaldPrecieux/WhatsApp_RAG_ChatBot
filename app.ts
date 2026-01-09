@@ -7,8 +7,8 @@ require('dotenv').config();
 const config = require('./services/config');
 //const webhookRoutes = require('./routes/webhook.routes'); // Import des routes
 //const memoryRoutes = require('./routes/memory.routes');
-import {memoryRoutes} from './routes/memory.routes';
-import {webhookRoutes} from './routes/webhook.routes'; // Import des routes
+import  memoryRoutes from './routes/memory.routes';
+import  webhookRoutes from './routes/webhook.routes'; // Import des routes
 
 const app = express();
 

@@ -100,5 +100,4 @@ function verifyRequestSignature(req: { headers: { [x: string]: any; }; }, res: a
   }
 }
 
-//module.exports = router;
-export const webhookRoutes = router;
+export default router;

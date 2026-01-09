@@ -22,9 +22,12 @@ module.exports = class Conversation {
     
     // Commande : @takeover (L'humain prend le contrôle)
     if (messageBody.toLowerCase().includes(constants.CMD_TAKEOVER)) {
+      if(senderPhoneNumberId===constants.ADMIN_PHONE_NUMBER){
+
+      }
       Store.setBotPaused(userPhone, true);
       await GraphApi.sendTextMessage(senderPhoneNumberId, userPhone, constants.MSG_HANDOVER_START);
-      // Notifier l'admin (toi)
+      // Notifier l'admin
       await GraphApi.sendTextMessage(senderPhoneNumberId, constants.ADMIN_PHONE_NUMBER, `⚠️ TAKEOVER activé pour le client ${userPhone}`);
       return;
     }
@@ -60,84 +63,32 @@ module.exports = class Conversation {
                 
         //await this.sendWelcomeMenu(message.id, senderPhoneNumberId, userPhone);
 
-      } 
-      else {
-        await this.routeButtonAction(message.id, senderPhoneNumberId, userPhone, message.type);
       }
-      } catch (error) {
+      else {
+        // Pour les autres types de messages (boutons, etc.), on utilise le routeur classique
+        if (message.type === 'interactive') {
+          const buttonId = rawMessage.interactive.button_reply.id;
+          await this.routeButtonAction(message.id, senderPhoneNumberId, userPhone, buttonId);
+        } else {
+          // Par défaut, on envoie le menu principal
+          await this.sendWelcomeMenu(message.id, senderPhoneNumberId, userPhone);
+        }
+      }
+    }
+      catch (error) {
       console.error("Erreur dans le flux IA:", error);
       // En cas d'erreur IA, on peut quand même envoyer le menu par sécurité
       await this.sendWelcomeMenu(message.id, senderPhoneNumberId, userPhone);
       }
   }
 
-  // --- ROUTEUR DES ACTIONS (Switch Case géant) ---
-  static async routeButtonAction(msgId, senderId, recipientId, buttonId) {
-    switch (buttonId) {
-      
-      // -- NAVIGATION GENERALE --
-      case constants.BTN_BACK_HOME:
-        await this.sendWelcomeMenu(msgId, senderId, recipientId);
-        break;
-
-      // -- BRANCHE PRODUITS --
-      case constants.BTN_MENU_PRODUCTS:
-      case constants.BTN_BACK_PRODUCTS:
-        await this.sendProductCatalog(msgId, senderId, recipientId);
-        break;
-
-      // -- DETAIL PRODUIT (Exemple Caméra) --
-      case constants.BTN_CAT_CAMERAS:
-        await this.sendProductDetailCamera(msgId, senderId, recipientId);
-        break;
-
-      // -- ACTION D'ACHAT --
-      case constants.BTN_BUY_CAM_PRO:
-        await this.sendClosingDeal(msgId, senderId, recipientId, "Caméra Pro X1");
-        break;
-
-      // -- DEMANDE HUMAIN --
-      case constants.BTN_TALK_HUMAN:
-        // On ne met pas en pause tout de suite, on notifie juste l'admin
-        await GraphApi.sendTextMessage(senderId, recipientId, "Un expert a été notifié. Posez votre question ici 👇");
-        await GraphApi.sendTextMessage(senderId, constants.ADMIN_PHONE_NUMBER, `🚨 LEAD CHAUD : ${recipientId} demande un humain !`);
-        break;
-
-      default:
-        // Par défaut, retour accueil
-        await this.sendWelcomeMenu(msgId, senderId, recipientId);
-    }
-  }
+ 
 
   // --- FONCTIONS D'ENVOI (LES "STEPS") ---
 
-  // STEP 1: Accueil
-  static async sendWelcomeMenu(msgId, senderId, recipientId) {
-    // Utilise un Template avec image pour faire pro
-    // Si tu n'as pas le template, utilise messageWithInteractiveReply avec une phrase d'accroche
-     await GraphApi.messageWithInteractiveReply(
-      msgId, senderId, recipientId,
-      "*Caméra Pro X1* 📸\n\n✅ Vision nocturne 4K\n✅ Détection IA\n✅ Batterie 1 an\n\nPrix: 199€ (Promo -20% ce soir)",
-      [
-        { id: constants.BTN_BUY_CAM_PRO, title: "Commander ✅" },
-        { id: constants.BTN_BACK_PRODUCTS, title: "Retour Catalogue ↩️" },
-        { id: constants.BTN_TALK_HUMAN, title: "Question ?" }
-      ]
-    );
-    // );
-    // await GraphApi.messageWithUtilityTemplate(msgId, senderId, recipientId, {
-    //   templateName: constants.TPL_WELCOME, // "welcome_menu_v1"
-    //   locale: "fr",
-    //   imageLink: "https://via.placeholder.com/800x400?text=SecurHome", // Mets ton lien d'image ici
-    //   parameters: ["Bienvenue"] // Variable {{1}}
-    // });
-    
-    // On enchaîne immédiatement avec les boutons (car les templates n'ont que 2-3 boutons max parfois limités)
-    // Ou mieux : Le template contient déjà les boutons Quick Reply (voir section Template ci-dessous)
-  }
+  // STEP 1: Message de bienvenue avec menu principal
 
-  // Alternative sans template pour démarrer tout de suite
-  /* static async sendWelcomeMenu(msgId, senderId, recipientId) {
+ static async sendWelcomeMenu(msgId, senderId, recipientId) {
     await GraphApi.messageWithInteractiveReply(
       msgId, senderId, recipientId,
       "👋 Bienvenue chez SecurHome.\nNous sécurisons ce qui compte pour vous.\n\nQue souhaitez-vous faire ?",
@@ -148,30 +99,29 @@ module.exports = class Conversation {
       ]
     );
   }
-  */
 
   // STEP 2: Catalogue
   static async sendProductCatalog(msgId, senderId, recipientId) {
     await GraphApi.messageWithInteractiveReply(
       msgId, senderId, recipientId,
-      "🔍 Quelle catégorie vous intéresse ?",
+      "🔍 Quelle catégorie de Lapin vous intéresse ?",
       [
-        { id: constants.BTN_CAT_CAMERAS, title: "Caméras 📹" },
-        { id: constants.BTN_CAT_ALARMS, title: "Alarmes 🚨" },
+        { id: constants.BTN_CAT_CONSOMMATION, title: "Consommation " },
+        { id: constants.BTN_CAT_ELEVAGE, title: "Elevage" },
         { id: constants.BTN_BACK_HOME, title: "Retour Accueil 🏠" }
       ]
     );
   }
 
   // STEP 3: Détail Produit (Vente)
-  static async sendProductDetailCamera(msgId, senderId, recipientId) {
+  static async sendProductDetailElevage(msgId, senderId, recipientId) {
     // Ici, on envoie d'abord une belle image ou un carousel
     // Puis le texte de vente avec bouton Achat
     
     // Exemple simple Interactif
     await GraphApi.messageWithInteractiveReply(
       msgId, senderId, recipientId,
-      "*Caméra Pro X1* 📸\n\n✅ Vision nocturne 4K\n✅ Détection IA\n✅ Batterie 1 an\n\nPrix: 199€ (Promo -20% ce soir)",
+      "*Lapin Géant des Flandres* 🐇\n\n✅ Race pure et robuste\n✅ Tempérament calme et sociable\n✅ Taille exceptionnelle (8–10 kg)\n\nPrix : 10 000 F (Offre spéciale – disponibilité limitée)"
       [
         { id: constants.BTN_BUY_CAM_PRO, title: "Commander ✅" },
         { id: constants.BTN_BACK_PRODUCTS, title: "Retour Catalogue ↩️" },
@@ -190,5 +140,44 @@ module.exports = class Conversation {
     
     // 3. Notification Admin
     await GraphApi.sendTextMessage(senderId, constants.ADMIN_PHONE_NUMBER, `💰 NOUVELLE COMMANDE EN COURS : ${recipientId} sur ${productName}`);
+  }
+
+   // --- ROUTEUR DES ACTIONS (Switch Case géant) ---
+  static async routeButtonAction(msgId, senderId, recipientId, buttonId) {
+    switch (buttonId) {
+      
+      // -- NAVIGATION GENERALE --
+      case constants.BTN_BACK_HOME:
+        await this.sendWelcomeMenu(msgId, senderId, recipientId);
+        break;
+
+      // -- BRANCHE PRODUITS --
+      case constants.BTN_MENU_PRODUCTS:
+      case constants.BTN_BACK_PRODUCTS:
+        await this.sendProductCatalog(msgId, senderId, recipientId);
+        break;
+
+      // -- DETAIL PRODUIT (Exemple Lapin) --
+      case constants.BTN_CAT_CONSOMMATION:
+      case constants.BTN_CAT_ELEVAGE:
+        await this.sendProductDetailElevage(msgId, senderId, recipientId);
+        break;
+
+      // -- ACTION D'ACHAT --
+      case constants.BTN_BUY_CAM_PRO:
+        await this.sendClosingDeal(msgId, senderId, recipientId, "Lapin Géant des Flandres");
+        break;
+
+      // -- DEMANDE HUMAIN --
+      case constants.BTN_TALK_HUMAN:
+        // On ne met pas en pause tout de suite, on notifie juste l'admin
+        await GraphApi.sendTextMessage(senderId, recipientId, "Un expert a été notifié. Posez votre question ici 👇");
+        await GraphApi.sendTextMessage(senderId, constants.ADMIN_PHONE_NUMBER, `🚨 LEAD CHAUD : ${recipientId} demande un humain !`);
+        break;
+
+      default:
+        // Par défaut, retour accueil
+        await this.sendWelcomeMenu(msgId, senderId, recipientId);
+    }
   }
 };

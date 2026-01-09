@@ -98,7 +98,7 @@ Contexte Pinecone:
     console.log("Réponse AI:", response);
 
     // Ajouter la réponse du bot à l'historique
-    history.push({ role: "assistant", content: response.content });
+    history.push({ role: "assistant", content: typeof response.content === "string" ? response.content : JSON.stringify(response.content) });
 
     // Sauvegarder l'historique mis à jour dans Redis
     await redis.set(

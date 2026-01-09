@@ -61,4 +61,4 @@ router.post('/update-memory', async (req, res) => {
   }
 });
 //module.exports = router;
-export const memoryRoutes = router;
+export default router;
