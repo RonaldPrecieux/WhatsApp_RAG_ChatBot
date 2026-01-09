@@ -91,7 +91,7 @@ module.exports = class Conversation {
  static async sendWelcomeMenu(msgId, senderId, recipientId) {
     await GraphApi.messageWithInteractiveReply(
       msgId, senderId, recipientId,
-      "👋 Bienvenue chez SecurHome.\nNous sécurisons ce qui compte pour vous.\n\nQue souhaitez-vous faire ?",
+      "👋 Bienvenue chez Lapiro.\n\nQue souhaitez-vous faire ?",
       [
         { id: constants.BTN_MENU_PRODUCTS, title: "Voir les Produits 📦" },
         { id: constants.BTN_TALK_HUMAN, title: "Parler à un expert 📞" },
