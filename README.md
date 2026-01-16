@@ -1,4 +1,7 @@
 # Lapiro's Market WhatsApp Bot
+> ⚠️ **Project Status:** This project is currently **paused** and **no longer actively maintained**.  
+> See **Project Status** section below for more details.
+
 
 Lapiro's Market is a fictional grocery brand created to showcase key features of the WhatsApp Business Platform. The bot leverages key features to deliver a great customer experience. Using this demo as inspiration, you can create a delightful WhatsApp experience that leverages both automation and live customer support.
 
@@ -149,6 +152,17 @@ Send a message to your WhatsApp Business Account from a consumer WhatsApp number
 You should see the webhook called in the ngrok terminal tab, and in your application terminal tab.
 
 If you see a response to your message in WhatsApp, you have fully set up your app! Voilà!
+
+## Project Status
+
+This project is currently **paused** and is no longer actively maintained.
+
+The bot remains functional and serves as a technical proof and learning project around:
+- WhatsApp Business Platform integration
+- Order automation via Excel
+- Excel-driven RAG logic
+
+Future work may explore alternative implementations (e.g. low-code tools such as n8n), but no active development is planned for this repository.
 
 ## License
 
